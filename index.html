@@ -25,7 +25,9 @@
 
       --max-content-width: 1200px;
       --header-height: 110px;
+      --header-scrolled-height: 92px;
       --header-mobile-height: 95px;
+      --header-mobile-scrolled-height: 82px;
 
       /* Dashboard Specific Palette */
       --tocawi-orange: #dc640d;
@@ -65,6 +67,12 @@
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+      padding-top: var(--header-height);
+      transition: padding-top 0.25s ease;
+    }
+
+    body.header-is-scrolled {
+      padding-top: var(--header-scrolled-height);
     }
 
     img {
@@ -79,20 +87,23 @@
     }
 
     /* ==========================================================================
-       EXACT REFERENCE HEADER & NAVIGATION BAR
+       EXACT REFERENCE HEADER & NAVIGATION BAR (FIXED ON DESKTOP & MOBILE)
        ========================================================================== */
     .site-header {
       background-color: var(--clr-bg-white);
       height: var(--header-height);
       width: 100%;
-      position: sticky;
+      position: fixed;
       top: 0;
-      z-index: 100;
+      left: 0;
+      right: 0;
+      z-index: 995;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
       transition: height 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
     }
 
     .site-header.is-scrolled {
+      height: var(--header-scrolled-height);
       background-color: rgba(255, 255, 255, 0.98);
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     }
@@ -260,7 +271,37 @@
       text-decoration: underline;
     }
 
-   
+    /* Global Floating Donate Button */
+    .global-floating-donate-btn {
+      position: fixed;
+      top: 130px;
+      right: 24px;
+      background-color: #3a5cbf;
+      color: #ffffff !important;
+      padding: 12px 24px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none !important;
+      border-radius: 50px;
+      box-shadow: 0 4px 15px rgba(58, 92, 191, 0.35);
+      z-index: 990;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .global-floating-donate-btn:hover {
+      background-color: #2b4699;
+      transform: scale(1.05);
+      box-shadow: 0 6px 22px rgba(58, 92, 191, 0.5);
+    }
+
+    .global-floating-donate-btn i {
+      font-size: 0.95rem;
+    }
+
     /* ==========================================================================
        CAMPAIGN BANNER & DASHBOARD WORKSPACE
        ========================================================================== */
@@ -756,6 +797,22 @@
     }
 
     @media (max-width: 768px) {
+      body {
+        padding-top: var(--header-mobile-height);
+      }
+
+      body.header-is-scrolled {
+        padding-top: var(--header-mobile-scrolled-height);
+      }
+
+      .site-header {
+        height: var(--header-mobile-height);
+      }
+
+      .site-header.is-scrolled {
+        height: var(--header-mobile-scrolled-height);
+      }
+
       .header-container {
         position: relative;
       }
@@ -913,7 +970,7 @@
 
       <!-- Desktop Navigation Links -->
       <nav class="desktop-nav">
-        <a href="index.html" class="nav-link active">Dashboard</a>
+        <a href="index.html" class="nav-link active">Home</a>
         <a href="#" class="nav-link">About Us</a>
         <a href="#" class="nav-link">Our Programs</a>
         <a href="#" class="nav-link">Get Involved</a>
@@ -938,7 +995,7 @@
       <i class="fa-solid xmark-icon fa-xmark"></i>
     </button>
     <nav class="mobile-nav-links">
-      <a href="index.html" class="mobile-link active">Dashboard</a>
+      <a href="index.html" class="mobile-link active">Home</a>
       <a href="#" class="mobile-link">About Us</a>
       <a href="#" class="mobile-link">Our Programs</a>
       <a href="#" class="mobile-link">Get Involved</a>
@@ -1216,7 +1273,7 @@
   </button>
 
   <script>
-    // Mobile Menu, Scroll Header & Back-to-Top Interactions
+    // Mobile Menu, Fixed Scroll Header & Back-to-Top Interactions
     document.addEventListener('DOMContentLoaded', function() {
       const siteHeader = document.getElementById('siteHeader');
       const menuToggle = document.getElementById('menuToggle');
@@ -1226,11 +1283,9 @@
       const scrollTopBtn = document.getElementById('floatingBackToTop');
 
       function updateHeaderOnScroll() {
-        if (window.scrollY > 24) {
-          siteHeader.classList.add('is-scrolled');
-        } else {
-          siteHeader.classList.remove('is-scrolled');
-        }
+        const isScrolled = window.scrollY > 24;
+        siteHeader.classList.toggle('is-scrolled', isScrolled);
+        document.body.classList.toggle('header-is-scrolled', isScrolled);
       }
 
       function closeMobileMenu() {
